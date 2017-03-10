@@ -1,0 +1,226 @@
+/* Custom CSS */
+
+@charset "UTF-8";
+
+.ei-invisible {
+  visibility: hidden;
+}
+
+.patient-history-active {
+  border: 1px solid red;
+}
+
+.workspace-hidden, #patient-history-container.ei-hidden, #image-area-container.ei-hidden, #text-area-container.ei-hidden {
+  position: fixed;
+  top: 200%;
+}
+
+.list-area-main, .search-area-main, .details-area-main {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  margin: 3.7em 0 0 0; /* fixed height of navbar */
+}
+
+#image-area-container {
+  height: 99%; /* iframe */
+  padding: 0;
+}
+
+.list-area-left, .list-area-right, .search-area-left, .search-area-right, #patient-history-container, #text-area-container {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/** iPad **/
+/* TODO mobile-first */
+.visible-ipad-block {
+  display: none !important;
+}
+
+.la-logo, .la-result-title,
+.sa-logo {
+  display: block !important;
+}
+
+.la-actions, .la-sub-title,
+.sa-actions, .sa-sub-title {
+  display: none !important;
+}
+
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px) {
+  /* iPad all */
+  .sa-logo {
+    display: none !important;
+  }
+
+  .sa-actions, .sa-sub-title {
+    display: block !important;
+  }
+
+  .visible-ipad-block {
+    display: block !important;
+  }
+
+  .hidden-ipad {
+    display: none !important;
+  }
+
+  #searchPanel {
+    width: 100%;
+  }
+
+  .search-area-left, .xero-text-area {
+    display: none !important;
+  }
+
+  .search-area-right {
+    width: 100%;
+  }
+}
+
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : portrait) {
+  /* iPad in portrait */
+  .la-logo, .la-result-title {
+    display: none !important;
+  }
+
+  .la-actions, .la-sub-title {
+    display: block !important;
+  }
+
+  .list-area-left.la-hidden {
+    display: none !important;
+  }
+
+  .list-area-left {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 100;
+    width: 35%;
+    height: auto;
+  }
+
+  .list-area-right {
+    width: 100%;
+  }
+}
+
+/* --- Copy these style rules to you application specific CSS file. --- */
+.navbar-fixed-top .navbar-header {
+  padding-right: .75em;
+  width: 100%;
+}
+
+.urgent-query-list {
+  color: #ff562c;
+}
+
+body>.content {
+  margin-top: 3.7em; /*Make room for the two fixed toolbars at the top*/
+  padding: 1em; /*Keep some room at the edges*/
+  position: relative;
+  /*Allows correct positioning of the date-picker dropdowns */
+}
+
+.chars-wide-15 {
+  max-width: 20em !important;
+}
+
+@media ( min-width : 768px) {
+  .chars-wide-15 {
+    width: 20em !important;
+  }
+}
+
+@media ( max-width : 767px) {
+  .form-inline .btn {
+    margin-top: .3em;
+  }
+}
+
+.results-bar {
+  margin: 1em 0 .3em 0;
+}
+
+.table-responsive {
+  position: relative;
+  left: -2px;
+}
+
+.table tbody tr td {
+  padding-left: 1em;
+}
+
+.property-pair {
+  display: block;
+}
+
+@media ( min-width : 768px) {
+  .property-pair {
+    display: inline-block;
+  }
+  .property-pair+.property-pair {
+    margin-left: 1em;
+  }
+}
+
+/* --- Copy these style rules to you application specific CSS file. --- */
+.main {
+  margin: 3.7em 1em 0 0;
+  /*Make room for the two fixed toolbars at the top*/
+}
+
+.search-button-bar .btn+.btn {
+  margin-left: .3em;
+}
+
+.search-area {
+  padding-top: 1em;
+}
+
+.search-area .group-component+.group-component {
+  margin-top: 1em;
+}
+
+.results-filters {
+  margin-top: 1em;
+}
+
+.results-toolbar {
+  /*margin-bottom: 2em;*/
+  /*border-bottom: 1px solid rgba(128, 128, 128, .5);*/
+  border-top: 1px solid rgba(128, 128, 128, .5);
+}
+
+.row.text-primary>*:first-child {
+  padding-left: 32px;
+}
+
+/*Display a chevron icon in the "complex" middle column cells*/
+.result-item {
+  position: relative;
+} /*Prepare for fixed positioning of icons*/
+.result-item .position-icon-right {
+  position: absolute;
+  top: .5em;
+  right: .35em;
+}
+
+
+.drop-target {
+	border:2px dashed gray;
+}
+
+.drop-over {
+	background: orange;
+}

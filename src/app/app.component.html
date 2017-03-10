@@ -1,5 +1,14 @@
-<h1>
-  {{title}}
-</h1>
+<div class="container">
+  <h1> {{title}} </h1>
 
-<app-search-screen></app-search-screen>
+  <div class="navbar navbar-regular navbar-floating ">
+    <a routerLink="/pipeline/list" class="btn navbar-btn btn-regular">Pipeline List</a>
+    <a routerLink="/pipeline/detail" class="btn navbar-btn btn-regular">Pipeline Detail</a>
+  </div>
+
+  <div class="data-container">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>
+
