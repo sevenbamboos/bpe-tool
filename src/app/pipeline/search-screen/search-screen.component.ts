@@ -15,13 +15,12 @@ export class SearchScreenComponent implements OnInit {
   private static isDebug:boolean = true;
 
   private pipelines: Pipeline[] = [];
-  private application?: BPEApplication = BPEApplication.HL7_Outbound;
-  private type?: PipelineType = PipelineType.HL7_Outbound_ORM;
 
-  //TODO 
-  //private _filterApplication = 
-
+  //TODO add empty option
   applications = BPEApplicationList.map(li => {
+    if (li === null) {
+      return { value: ''};
+    }
     return {
       name: li,
       value: BPEApplication[li]
@@ -40,6 +39,34 @@ export class SearchScreenComponent implements OnInit {
     typeSelect: new FormControl(this.types[0]),
   });
 
+  private getApplicationSelected() {
+    const appValue = this.searchForm.get('applicationSelect').value;
+    return appValue;
+  }
+
+  private getTypeSelected() {
+    const typeValue = this.searchForm.get('typeSelect').value;
+    return typeValue;
+  }
+  
+  private _filterApplication = pipeline => {
+    const selected = this.getApplicationSelected();
+    if (typeof selected === 'undefined') {
+      return true;
+    } else {
+      return selected === pipeline.application;
+    }
+  };
+
+  private _filterType = pipeline => {
+    const selected = this.getTypeSelected();
+    if (typeof selected === 'undefined') {
+      return true;
+    } else {
+      return selected === pipeline.type;
+    }
+  };
+
   constructor(private ds: Datasource) { }
 
   ngOnInit() {
@@ -47,27 +74,11 @@ export class SearchScreenComponent implements OnInit {
   }
 
   search() {
-
-    const appSelected = this.getApplicationSelected().value;
-    this.application = appSelected || appSelected;
-
-    this.debug(`application:${this.application}, type:${this.type}`);
     this.ds.getPipelines().subscribe(data => {
       this.pipelines = data.filter(x=>{
-        let compare: boolean = true;
-        if (this.application) {
-          compare = compare && (x.application == this.application);
-        }
-        if (this.type) {
-          compare = compare && (x.type == this.type);
-        }
-        return compare;
+        return this._filterApplication(x) && this._filterType(x);
       });
     });
-  }
-
-  private getApplicationSelected() {
-    return this.searchForm.get('applicationSelect');
   }
 
   private debug(...args) {
