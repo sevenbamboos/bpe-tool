@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BPEApplication, PipelineType } from '../../model/share.model';
+import { FormGroup, FormControl } from '@angular/forms';
+import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } from '../../model/share.model';
 import { Pipeline } from '../../model/pipeline.model';
 import { StaticDataSource as Datasource } from '../../model/static.datasource';
 
@@ -17,7 +18,27 @@ export class SearchScreenComponent implements OnInit {
   private application?: BPEApplication = BPEApplication.HL7_Outbound;
   private type?: PipelineType = PipelineType.HL7_Outbound_ORM;
 
+  //TODO 
   //private _filterApplication = 
+
+  applications = BPEApplicationList.map(li => {
+    return {
+      name: li,
+      value: BPEApplication[li]
+    };
+  });
+
+  types = PipelineTypeList.map(li => {
+    return {
+      name: li,
+      value: PipelineType[li]
+    };
+  });
+
+  searchForm = new FormGroup({
+    applicationSelect: new FormControl(this.applications[0]),
+    typeSelect: new FormControl(this.types[0]),
+  });
 
   constructor(private ds: Datasource) { }
 
@@ -26,6 +47,11 @@ export class SearchScreenComponent implements OnInit {
   }
 
   search() {
+
+    const appSelected = this.getApplicationSelected().value;
+    this.application = appSelected || appSelected;
+
+    this.debug(`application:${this.application}, type:${this.type}`);
     this.ds.getPipelines().subscribe(data => {
       this.pipelines = data.filter(x=>{
         let compare: boolean = true;
@@ -38,6 +64,10 @@ export class SearchScreenComponent implements OnInit {
         return compare;
       });
     });
+  }
+
+  private getApplicationSelected() {
+    return this.searchForm.get('applicationSelect');
   }
 
   private debug(...args) {
