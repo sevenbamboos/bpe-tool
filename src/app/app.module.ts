@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { ModelModule } from './model/model.module';
 import { PipelineModule } from './pipeline/pipeline.module';
 import { SearchScreenComponent as PipelineSearchScreen } from './pipeline/search-screen/search-screen.component';
 import { DetailScreenComponent as PipelineDetailScreen } from './pipeline/detail-screen/detail-screen.component';
@@ -17,6 +18,7 @@ import { DetailScreenComponent as PipelineDetailScreen } from './pipeline/detail
     BrowserModule,
     FormsModule,
     HttpModule,
+    ModelModule,
     PipelineModule,
     RouterModule.forRoot([
       {
