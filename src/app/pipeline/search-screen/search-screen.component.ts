@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { Logger } from '../../util/logger.service';
 import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } from '../../model/share.model';
 import { Pipeline } from '../../model/pipeline.model';
 import { StaticDataSource as Datasource } from '../../model/static.datasource';
@@ -12,9 +13,6 @@ import 'rxjs/add/operator/finally';
   styleUrls: ['./search-screen.component.css']
 })
 export class SearchScreenComponent implements OnInit {
-
-  //TODO extract it to a global space or provider
-  private static isDebug:boolean = true;
 
   loading = false;
   originalPipelines: Pipeline[] = [];
@@ -45,12 +43,17 @@ export class SearchScreenComponent implements OnInit {
 
   appChangeLog: string[] = [];
 
-  constructor(private ds: Datasource, private formBuilder: FormBuilder) { 
+  constructor(
+    private ds: Datasource, 
+    private logger: Logger,
+    private formBuilder: FormBuilder
+  ) { 
     this.createForm();
     this.handleFormChange(); 
   }
 
   ngOnInit() {
+    this.logger.debug('search screen init');
     this.reload();
   }
 
@@ -111,9 +114,5 @@ export class SearchScreenComponent implements OnInit {
 
   private getTypeControl() {
     return this.searchForm.get('typeSelect');
-  }
-
-  private debug(...args) {
-    SearchScreenComponent.isDebug && console.log(args);
   }
 }
