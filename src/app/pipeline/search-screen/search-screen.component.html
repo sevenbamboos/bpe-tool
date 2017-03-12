@@ -1,39 +1,63 @@
 <div class="container">
 
-  <h3>Search Form</h3>
+  <div class="row">
+    <h3>Search Form</h3>
     <form [formGroup]="searchForm" (ngSubmit)="search()">
-      <select formControlName="applicationSelect">
-        <option *ngFor="let app of applications" [ngValue]="app.name">
-          {{ app.value }}
-        </option>
-      </select>
-      <select formControlName="typeSelect">
-        <option *ngFor="let ty of types" [ngValue]="ty.name">
-          {{ ty.value }}
-        </option>
-      </select>
-      <button (click)="search()">Search</button>
-    </form>
-</div>
+      
+      <div class="row">
+      <div class="col-md-3 form-group">
+        <label>BPE Application
+          <select class="form-control" formControlName="applicationSelect">
+            <option *ngFor="let app of applications" [ngValue]="app.name">
+              {{ app.value }}
+            </option>
+          </select>
+        </label>
+      </div>
 
-<div class="container">
-  <h3>Search Result</h3>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Name</th>
-        <th>BPE Application</th>
-        <th>Pipeline Type</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let pipeline of pipelines; let index = index;">
-        <td>{{index+1}}</td>
-        <td>{{pipeline.name}}</td>
-        <td>{{pipeline.getApplicationValue()}}</td>
-        <td>{{pipeline.getTypeValue()}}</td>
-      </tr>
-    </tbody> 
-  </table>
+      <div class="col-md-3 form-group">
+        <label>Pipeline Type
+          <select class="form-control" formControlName="typeSelect">
+            <option *ngFor="let ty of types" [ngValue]="ty.name">
+              {{ ty.value }}
+            </option>
+          </select>
+        </label>
+      </div>
+      </div>
+
+      <div class="row">
+      <div class="col-md-3 form-group">
+        <label>
+          <button class="form-control" (click)="reload()">Reload</button>
+        </label>
+      </div>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="row">
+    <!--<h3 *ngIf="loading"><i>Loading ... </i></h3>-->
+    <h3>{{pipelines.length}} Result</h3>
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>BPE Application</th>
+          <th>Pipeline Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pipeline of pipelines; let index = index;">
+          <td>{{index+1}}</td>
+          <td>{{pipeline.name}}</td>
+          <td>{{pipeline.getApplicationValue()}}</td>
+          <td>{{pipeline.getTypeValue()}}</td>
+        </tr>
+      </tbody> 
+    </table>
+  </div>
+
 </div>

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
 import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } from '../../model/share.model';
 import { Pipeline } from '../../model/pipeline.model';
 import { StaticDataSource as Datasource } from '../../model/static.datasource';
+import 'rxjs/add/operator/finally';
 
 @Component({
   selector: 'app-search-screen',
@@ -14,12 +16,14 @@ export class SearchScreenComponent implements OnInit {
   //TODO extract it to a global space or provider
   private static isDebug:boolean = true;
 
-  private pipelines: Pipeline[] = [];
+  loading = false;
+  originalPipelines: Pipeline[] = [];
+  pipelines: Pipeline[] = [];
 
-  //TODO add empty option
+  //TODO put complicated part into sub-component
   applications = BPEApplicationList.map(li => {
     if (li === null) {
-      return { value: ''};
+      return { name: null, value: ''};
     }
     return {
       name: li,
@@ -28,57 +32,85 @@ export class SearchScreenComponent implements OnInit {
   });
 
   types = PipelineTypeList.map(li => {
+    if (li === null) {
+      return { name: null, value: ''};
+    }
     return {
       name: li,
       value: PipelineType[li]
     };
   });
 
-  searchForm = new FormGroup({
-    applicationSelect: new FormControl(this.applications[0]),
-    typeSelect: new FormControl(this.types[0]),
-  });
+  searchForm: FormGroup;
 
-  private getApplicationSelected() {
-    const appValue = this.searchForm.get('applicationSelect').value;
-    return appValue;
+  appChangeLog: string[] = [];
+
+  constructor(private ds: Datasource, private formBuilder: FormBuilder) { 
+    this.createForm();
+    this.handleFormChange(); 
   }
 
-  private getTypeSelected() {
-    const typeValue = this.searchForm.get('typeSelect').value;
-    return typeValue;
+  ngOnInit() {
+    this.reload();
   }
-  
+
+  //TODO how to do filter based on Observable so that I can remove the unnecessary original copy?
+  search() {
+    this.pipelines = this.originalPipelines.filter(x=>{
+      return this._filterApplication(x) && this._filterType(x);
+    });
+  }
+
+  reload() {
+    this.loading = true;
+    let pipelines$ = this.ds.getPipelines();
+    this.ds.getPipelines().subscribe(data => {
+      this.originalPipelines = data;
+      this.search();
+    });
+    pipelines$.finally(() => this.loading = false);
+  }
+
+  private createForm() {
+    this.searchForm = this.formBuilder.group({
+      applicationSelect: '',
+      typeSelect: '',
+    });
+  }
+
+  private handleFormChange() {
+    this.getApplicationControl().valueChanges.forEach(
+      (value: string) => this.search()
+    );
+    this.getTypeControl().valueChanges.forEach(
+      (value: string) => this.search()
+    );
+  }
+
   private _filterApplication = pipeline => {
-    const selected = this.getApplicationSelected();
-    if (typeof selected === 'undefined') {
-      return true;
-    } else {
+    const selected = this.getApplicationControl().value;
+    if (selected) {
       return selected === pipeline.application;
+    } else {
+      return true;
     }
   };
 
   private _filterType = pipeline => {
-    const selected = this.getTypeSelected();
-    if (typeof selected === 'undefined') {
-      return true;
-    } else {
+    const selected = this.getTypeControl().value;
+    if (selected) {
       return selected === pipeline.type;
+    } else {
+      return true;
     }
   };
 
-  constructor(private ds: Datasource) { }
-
-  ngOnInit() {
-    this.search();
+  private getApplicationControl() {
+    return this.searchForm.get('applicationSelect');
   }
 
-  search() {
-    this.ds.getPipelines().subscribe(data => {
-      this.pipelines = data.filter(x=>{
-        return this._filterApplication(x) && this._filterType(x);
-      });
-    });
+  private getTypeControl() {
+    return this.searchForm.get('typeSelect');
   }
 
   private debug(...args) {
