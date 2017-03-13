@@ -40,7 +40,6 @@ export class SearchScreenComponent implements OnInit {
   }
 
   doSearch(event) {
-    this.logger.info("doSearch with:" + JSON.stringify(event));
     event = event || {application:null, type:null};
     const {application, type, reload} = event;
 

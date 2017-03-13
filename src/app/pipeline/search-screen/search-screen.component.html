@@ -1,7 +1,7 @@
 <div class="container">
 
   <div class="row">
-    <search-form (onSearch)="doSearch($event)"></search-form>
+    <search-form [loading]="loading" (onSearch)="doSearch($event)"></search-form>
   </div>
 
   <div class="row">

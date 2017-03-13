@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Logger } from '../../../util/logger.service';
@@ -12,6 +12,8 @@ import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } fr
 export class SearchFormComponent {
 
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
+
+  @Input() loading: boolean = false;
 
   applications = BPEApplicationList.map(li => {
     if (li === null) {
