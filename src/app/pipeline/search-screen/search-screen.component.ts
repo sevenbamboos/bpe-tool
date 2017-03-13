@@ -19,17 +19,10 @@ export class SearchScreenComponent implements OnInit {
   originalPipelines: Pipeline[] = [];
   pipelines: Pipeline[] = [];
 
-  selectedPipeline: Pipeline;
-
   constructor( private ds: Datasource, private logger: Logger, private router: Router) { }
 
   ngOnInit() {
     this.reload();
-  }
-
-  doEdit(event) {
-    this.logger.alertDebug(JSON.stringify(event));
-    this.router.navigate(['pipeline/detail', event.id]);
   }
 
   doAction(event) {
@@ -47,24 +40,35 @@ export class SearchScreenComponent implements OnInit {
   }
 
   doSearch(event) {
+    this.logger.info("doSearch with:" + JSON.stringify(event));
     event = event || {application:null, type:null};
-    const {application, type} = event;
-    this.pipelines = this.originalPipelines.filter(x=>{
-      return this._addFilterForApplication(application)(x)
-        && this._addFilterForType(type)(x);
-    });
+    const {application, type, reload} = event;
 
-    this.selectedPipeline = null;
+    if (reload) {
+      this.reload();
+    } else {
+      this.pipelines = this.originalPipelines.filter(x=>{
+        return this._addFilterForApplication(application)(x)
+          && this._addFilterForType(type)(x);
+      });
+    }
   }
 
   reload() {
     this.loading = true;
-    let pipelines$ = this.ds.getPipelines();
-    this.ds.getPipelines().subscribe(data => {
-      this.originalPipelines = data;
-      this.doSearch(null);
-    });
-    pipelines$.finally(() => this.loading = false);
+    this.ds.getPipelines().subscribe(
+      data => {
+        this.originalPipelines = data;
+        this.doSearch(null);
+        
+        //TODO mock slow connection, delete in production
+        setTimeout(()=>this.loading = false, 3000);
+
+      },
+      error => {
+        this.logger.alertError(error);
+      }
+    );
   }
 
   private _addFilterForApplication = selected => {

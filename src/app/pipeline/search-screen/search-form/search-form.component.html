@@ -1,4 +1,4 @@
-<form [formGroup]="searchForm" (ngSubmit)="doSearch()">
+<form [formGroup]="searchForm">
   
   <fieldset>
     <legend>Search Pipelines</legend>
@@ -24,7 +24,7 @@
 
   <div class="col-md-3 form-group">
     <label>
-      <button class="form-control" (click)="doSearch()">Reload</button>
+      <button class="form-control" (click)="onFormChange(true)">Reload</button>
     </label>
   </div>
   </fieldset>

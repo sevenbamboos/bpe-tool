@@ -42,11 +42,12 @@ export class SearchFormComponent {
     this.handleFormChange();
   }
 
-  onFormChange() {
+  onFormChange(reload: boolean) {
     const event = {
-      'application': this.getApplicationControl().value,
-      'type': this.getTypeControl().value,
-    }
+      application: this.getApplicationControl().value,
+      type: this.getTypeControl().value,
+      reload: reload
+    };
     this.onSearch.emit(event);
   }
 
@@ -59,10 +60,10 @@ export class SearchFormComponent {
 
   private handleFormChange() {
     this.getApplicationControl().valueChanges.forEach(
-      (value: string) => this.onFormChange()
+      (value: string) => this.onFormChange(false)
     );
     this.getTypeControl().valueChanges.forEach(
-      (value: string) => this.onFormChange()
+      (value: string) => this.onFormChange(false)
     );
   }
 
