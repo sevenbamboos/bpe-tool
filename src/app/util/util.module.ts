@@ -8,7 +8,7 @@ import { Logger, LOGLEVEL } from './logger.service';
   ],
   declarations: [],
   providers: [
-    { provide: Logger, useValue: new Logger(LOGLEVEL.DEBUG)}
+    { provide: Logger, useValue: new Logger(LOGLEVEL.INFO)}
   ]
 })
 export class UtilModule { }

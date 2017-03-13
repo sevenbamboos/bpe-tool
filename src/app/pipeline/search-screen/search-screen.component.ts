@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Logger } from '../../util/logger.service';
-import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } from '../../model/share.model';
+import { BPEApplication, PipelineType } from '../../model/share.model';
 import { Pipeline } from '../../model/pipeline.model';
 import { StaticDataSource as Datasource } from '../../model/static.datasource';
 import 'rxjs/add/operator/finally';
@@ -18,50 +19,42 @@ export class SearchScreenComponent implements OnInit {
   originalPipelines: Pipeline[] = [];
   pipelines: Pipeline[] = [];
 
-  //TODO put complicated part into sub-component
-  applications = BPEApplicationList.map(li => {
-    if (li === null) {
-      return { name: null, value: ''};
-    }
-    return {
-      name: li,
-      value: BPEApplication[li]
-    };
-  });
+  selectedPipeline: Pipeline;
 
-  types = PipelineTypeList.map(li => {
-    if (li === null) {
-      return { name: null, value: ''};
-    }
-    return {
-      name: li,
-      value: PipelineType[li]
-    };
-  });
-
-  searchForm: FormGroup;
-
-  appChangeLog: string[] = [];
-
-  constructor(
-    private ds: Datasource, 
-    private logger: Logger,
-    private formBuilder: FormBuilder
-  ) { 
-    this.createForm();
-    this.handleFormChange(); 
-  }
+  constructor( private ds: Datasource, private logger: Logger, private router: Router) { }
 
   ngOnInit() {
-    this.logger.debug('search screen init');
     this.reload();
   }
 
-  //TODO how to do filter based on Observable so that I can remove the unnecessary original copy?
-  search() {
+  doEdit(event) {
+    this.logger.alertDebug(JSON.stringify(event));
+    this.router.navigate(['pipeline/detail', event.id]);
+  }
+
+  doAction(event) {
+    const {id, eventName} = event;
+    if (eventName === 'edit') {
+      this.router.navigate(['pipeline/detail', id]);
+    } else if (eventName === 'delete') {
+      const index = this.pipelines.findIndex(x=>x.id === id);
+      if (index < 0) {
+        this.logger.alertError(`Can't find pipeline with ID:${id}`);
+      } else {
+        this.pipelines.splice(index, 1);
+      }
+    }
+  }
+
+  doSearch(event) {
+    event = event || {application:null, type:null};
+    const {application, type} = event;
     this.pipelines = this.originalPipelines.filter(x=>{
-      return this._filterApplication(x) && this._filterType(x);
+      return this._addFilterForApplication(application)(x)
+        && this._addFilterForType(type)(x);
     });
+
+    this.selectedPipeline = null;
   }
 
   reload() {
@@ -69,50 +62,28 @@ export class SearchScreenComponent implements OnInit {
     let pipelines$ = this.ds.getPipelines();
     this.ds.getPipelines().subscribe(data => {
       this.originalPipelines = data;
-      this.search();
+      this.doSearch(null);
     });
     pipelines$.finally(() => this.loading = false);
   }
 
-  private createForm() {
-    this.searchForm = this.formBuilder.group({
-      applicationSelect: '',
-      typeSelect: '',
-    });
-  }
-
-  private handleFormChange() {
-    this.getApplicationControl().valueChanges.forEach(
-      (value: string) => this.search()
-    );
-    this.getTypeControl().valueChanges.forEach(
-      (value: string) => this.search()
-    );
-  }
-
-  private _filterApplication = pipeline => {
-    const selected = this.getApplicationControl().value;
-    if (selected) {
-      return selected === pipeline.application;
-    } else {
-      return true;
-    }
+  private _addFilterForApplication = selected => {
+    return pipeline => {
+      if (selected) {
+        return selected === pipeline.application;
+      } else {
+        return true;
+      }
+    };
   };
 
-  private _filterType = pipeline => {
-    const selected = this.getTypeControl().value;
-    if (selected) {
-      return selected === pipeline.type;
-    } else {
-      return true;
-    }
+  private _addFilterForType = selected => {
+    return pipeline => {
+      if (selected) {
+        return selected === pipeline.type;
+      } else {
+        return true;
+      }
+    };
   };
-
-  private getApplicationControl() {
-    return this.searchForm.get('applicationSelect');
-  }
-
-  private getTypeControl() {
-    return this.searchForm.get('typeSelect');
-  }
 }

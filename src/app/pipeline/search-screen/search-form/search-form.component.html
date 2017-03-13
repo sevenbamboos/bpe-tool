@@ -1,0 +1,32 @@
+<form [formGroup]="searchForm" (ngSubmit)="doSearch()">
+  
+  <fieldset>
+    <legend>Search Pipelines</legend>
+  <div class="form-group">
+    <label>BPE Application
+      <select class="form-control" formControlName="applicationSelect">
+        <option *ngFor="let app of applications" [ngValue]="app.name">
+          {{ app.value }}
+        </option>
+      </select>
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label>Pipeline Type
+      <select class="form-control" formControlName="typeSelect">
+        <option *ngFor="let ty of types" [ngValue]="ty.name">
+          {{ ty.value }}
+        </option>
+      </select>
+    </label>
+  </div>
+
+  <div class="col-md-3 form-group">
+    <label>
+      <button class="form-control" (click)="doSearch()">Reload</button>
+    </label>
+  </div>
+  </fieldset>
+
+</form>

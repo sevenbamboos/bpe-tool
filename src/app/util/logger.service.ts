@@ -28,7 +28,7 @@ export class Logger {
   //TODO take into account loggerName
   private _log(appender, loggerName, level, msg) {
 
-    if (this.currentLevel < level) {
+    if (this.currentLevel > level) {
       return;
     }
 
@@ -38,5 +38,8 @@ export class Logger {
     };
 
     appenders[appender].call(this, msg);
+
+    //To make it K-combinator instead of returning void
+    return msg;
   }
 }

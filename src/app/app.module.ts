@@ -10,6 +10,7 @@ import { ModelModule } from './model/model.module';
 import { PipelineModule } from './pipeline/pipeline.module';
 import { SearchScreenComponent as PipelineSearchScreen } from './pipeline/search-screen/search-screen.component';
 import { DetailScreenComponent as PipelineDetailScreen } from './pipeline/detail-screen/detail-screen.component';
+import { SearchFormComponent } from './search-screen/search-form/search-form.component';
 
 @NgModule({
   declarations: [
@@ -24,11 +25,16 @@ import { DetailScreenComponent as PipelineDetailScreen } from './pipeline/detail
     PipelineModule,
     RouterModule.forRoot([
       {
+        path: '', 
+        redirectTo: '/pipeline/list', 
+        pathMatch: 'full'
+      },
+      {
         path: 'pipeline/list',
         component: PipelineSearchScreen 
       },
       {
-        path: 'pipeline/detail',
+        path: 'pipeline/detail/:id',
         component: PipelineDetailScreen 
       }
     ]),

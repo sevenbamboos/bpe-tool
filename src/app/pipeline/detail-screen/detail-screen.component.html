@@ -1,3 +1,7 @@
+<div class="navbar navbar-regular navbar-floating ">
+  <a class="btn navbar-btn btn-regular" (click)="onSave()">Save</a>
+  <a class="btn navbar-btn btn-regular" (click)="goBack()">Cancel</a>
+</div>
 <p>
-  detail-screen works!
+  Edit Pipeline:{{pipeline || '' | json}}
 </p>

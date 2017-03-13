@@ -42,4 +42,9 @@ export class StaticDataSource {
   getPipelines(): Observable<Pipeline[]> {
     return Observable.from([this._pipelines]);
   }
+
+  getPipelineByID(id: number): Observable<Pipeline> {
+    let result = this._pipelines.find(x=>x.id === id);
+    return Observable.from([result]);
+  }
 }

@@ -1,0 +1,24 @@
+<h3>{{pipelines.length}} Result</h3>
+<table class="table table-condensed">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Name</th>
+      <th>BPE Application</th>
+      <th>Pipeline Type</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let pipeline of pipelines; let index = index;" (mouseover)="selectedPipeline=pipeline" [ngClass]="{'table-info': pipeline===selectedPipeline}">
+      <td>{{index+1}}</td>
+      <td>{{pipeline.name}}</td>
+      <td>{{pipeline.getApplicationValue()}}</td>
+      <td>{{pipeline.getTypeValue()}}</td>
+      <td>
+        <button (click)="onPipelineEdit()">Edit</button>
+        <button (click)="onPipelineDelete()">Delete</button>
+      </td>
+    </tr>
+  </tbody> 
+</table>
