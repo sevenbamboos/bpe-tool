@@ -42,7 +42,7 @@ export class SearchFormComponent {
     this.handleFormChange();
   }
 
-  doSearch() {
+  onFormChange() {
     const event = {
       'application': this.getApplicationControl().value,
       'type': this.getTypeControl().value,
@@ -59,10 +59,10 @@ export class SearchFormComponent {
 
   private handleFormChange() {
     this.getApplicationControl().valueChanges.forEach(
-      (value: string) => this.doSearch()
+      (value: string) => this.onFormChange()
     );
     this.getTypeControl().valueChanges.forEach(
-      (value: string) => this.doSearch()
+      (value: string) => this.onFormChange()
     );
   }
 
