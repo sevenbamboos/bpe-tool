@@ -6,6 +6,7 @@ import 'rxjs/add/observable/from';
 
 @Injectable()
 export class StaticDataSource {
+
   private _pipelines: Pipeline[] = [
 
     new Pipeline(1, "HL7 ADT_Inbound (Default)", 

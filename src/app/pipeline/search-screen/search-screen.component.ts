@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { Logger } from '../../util/logger.service';
+import * as Logger from '../../util/logger.service';
 import { BPEApplication, PipelineType } from '../../model/share.model';
 import { Pipeline } from '../../model/pipeline.model';
 import { StaticDataSource as Datasource } from '../../model/static.datasource';
@@ -19,9 +19,12 @@ export class SearchScreenComponent implements OnInit {
   originalPipelines: Pipeline[] = [];
   pipelines: Pipeline[] = [];
 
-  constructor( private ds: Datasource, private logger: Logger, private router: Router) { }
+  constructor( 
+    private ds: Datasource, 
+    private router: Router) { }
 
   ngOnInit() {
+    Logger.info('Search screen onInit');
     this.reload();
   }
 
@@ -32,7 +35,7 @@ export class SearchScreenComponent implements OnInit {
     } else if (eventName === 'delete') {
       const index = this.pipelines.findIndex(x=>x.id === id);
       if (index < 0) {
-        this.logger.alertError(`Can't find pipeline with ID:${id}`);
+        Logger.error(`Can't find pipeline with ID:${id}`);
       } else {
         this.pipelines.splice(index, 1);
       }
@@ -65,7 +68,7 @@ export class SearchScreenComponent implements OnInit {
 
       },
       error => {
-        this.logger.alertError(error);
+        Logger.error(error);
       }
     );
   }

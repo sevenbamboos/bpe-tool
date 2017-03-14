@@ -1,32 +1,30 @@
-import { Injectable } from "@angular/core";
-
-export enum LOGLEVEL {
-  DEBUG = 1, INFO, WARNING, ERROR 
+enum LOGLEVEL {
+  DEBUG = 1, INFO, WARN, ERROR 
 }
 
-@Injectable()
+// Log service that can be configured with console or window(alert)
+
 export class Logger {
 
-  currentLevel: LOGLEVEL = LOGLEVEL.DEBUG; 
+  // properties
 
-  constructor(level: LOGLEVEL) {
+  debug = this.log.bind(this, 'global', LOGLEVEL.DEBUG);
+  info = this.log.bind(this, 'global', LOGLEVEL.INFO);
+  warn = this.log.bind(this, 'global', LOGLEVEL.WARN);
+  error = this.log.bind(this, 'global', LOGLEVEL.ERROR);
+
+  private currentLevel: LOGLEVEL = LOGLEVEL.DEBUG; 
+  private currentAppender: string;
+
+  constructor(level: LOGLEVEL, appender: string) {
     this.currentLevel = level;
+    this.currentAppender = appender;
   }
 
-  log = this._log.bind(this, 'console');
-  debug = this.log.bind(this, null, LOGLEVEL.DEBUG);
-  info = this.log.bind(this, null, LOGLEVEL.INFO);
-  warning = this.log.bind(this, null, LOGLEVEL.WARNING);
-  error = this.log.bind(this, null, LOGLEVEL.ERROR);
-
-  alertLog = this._log.bind(this, 'alert');
-  alertDebug = this.alertLog.bind(this, null, LOGLEVEL.DEBUG);
-  alertInfo = this.alertLog.bind(this, null, LOGLEVEL.INFO);
-  alertWarning = this.alertLog.bind(this, null, LOGLEVEL.WARNING);
-  alertError = this.alertLog.bind(this, null, LOGLEVEL.ERROR);
+  // methods
 
   //TODO take into account loggerName
-  private _log(appender, loggerName, level, msg) {
+  private log(loggerName, level, msg) {
 
     if (this.currentLevel > level) {
       return;
@@ -34,12 +32,23 @@ export class Logger {
 
     const appenders = {
       'console': console.log,
-      'alert': window.alert
+      'window': window.alert
     };
 
-    appenders[appender].call(this, msg);
+    let prefix = `${new Date(Date.now()).toTimeString()} [${LOGLEVEL[level]}] `;
+
+    appenders[this.currentAppender].call(this, prefix + msg);
 
     //To make it K-combinator instead of returning void
     return msg;
   }
 }
+
+const ConsoleLogger = new Logger(LOGLEVEL.INFO, 'console');
+const WindowLogger = new Logger(LOGLEVEL.WARN, 'window');
+const myLogger = ConsoleLogger;
+
+export const debug = (msg) => myLogger.debug(msg);
+export const info = (msg) => myLogger.info(msg);
+export const warn = (msg) => myLogger.warn(msg);
+export const error = (msg) => myLogger.error(msg);
