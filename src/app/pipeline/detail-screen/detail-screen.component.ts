@@ -18,7 +18,6 @@ export class DetailScreenComponent implements OnInit {
   pipeline: Pipeline;
 
   constructor(
-    private logger: Logger,
     private route: ActivatedRoute,
     private location: Location,
     private ds: Datasource
@@ -38,6 +37,6 @@ export class DetailScreenComponent implements OnInit {
   }
 
   onSave() {
-    this.logger.alertWarning('Not implemented');
+    Logger.warn('Not implemented');
   }
 }

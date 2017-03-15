@@ -1,45 +1,34 @@
 import { Injectable } from "@angular/core";
 
-export enum LOGLEVEL {
-  DEBUG = 1, INFO, WARNING, ERROR 
+enum LOGLEVEL {
+  DEBUG = 1, INFO, WARN, ERROR 
 }
 
-@Injectable()
-export class Logger {
+export const Logger = (function Logger() {
 
-  currentLevel: LOGLEVEL = LOGLEVEL.DEBUG; 
-
-  constructor(level: LOGLEVEL) {
-    this.currentLevel = level;
-  }
-
-  log = this._log.bind(this, 'console');
-  debug = this.log.bind(this, null, LOGLEVEL.DEBUG);
-  info = this.log.bind(this, null, LOGLEVEL.INFO);
-  warning = this.log.bind(this, null, LOGLEVEL.WARNING);
-  error = this.log.bind(this, null, LOGLEVEL.ERROR);
-
-  alertLog = this._log.bind(this, 'alert');
-  alertDebug = this.alertLog.bind(this, null, LOGLEVEL.DEBUG);
-  alertInfo = this.alertLog.bind(this, null, LOGLEVEL.INFO);
-  alertWarning = this.alertLog.bind(this, null, LOGLEVEL.WARNING);
-  alertError = this.alertLog.bind(this, null, LOGLEVEL.ERROR);
+  const currentLevel: LOGLEVEL = LOGLEVEL.DEBUG; 
 
   //TODO take into account loggerName
-  private _log(appender, loggerName, level, msg) {
-
-    if (this.currentLevel > level) {
+  function _log(appender, loggerName, level, msg) {
+    if (currentLevel > level) {
       return;
     }
-
     const appenders = {
       'console': console.log,
       'alert': window.alert
     };
-
     appenders[appender].call(this, msg);
 
     //To make it K-combinator instead of returning void
     return msg;
   }
-}
+
+  const log = _log.bind(this, 'console');
+
+  return {
+    debug: log.bind(this, null, LOGLEVEL.DEBUG),
+    info: log.bind(this, null, LOGLEVEL.INFO),
+    warn: log.bind(this, null, LOGLEVEL.WARN),
+    error: log.bind(this, null, LOGLEVEL.ERROR),
+  };
+}) ();
