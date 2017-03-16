@@ -1,5 +1,3 @@
-import { Injectable } from "@angular/core";
-
 enum LOGLEVEL {
   DEBUG = 1, INFO, WARN, ERROR 
 }
