@@ -8,21 +8,32 @@ import { StaticDataSource as DataSource } from './static.datasource';
 export class PipelineService {
 
   readPipeline$: Observable<Pipeline[]>; 
-  readPipelineSubject: Subject<Pipeline[]>;
+  private readPipelineSubject: Subject<Pipeline[]>;
+
+  error$: Observable<any>;
+  private errorSubject: Subject<any>;
 
   constructor(
     private dataSource: DataSource
   ) { 
     this.readPipelineSubject = new Subject();
     this.readPipeline$ = this.readPipelineSubject.asObservable();
+
+    this.errorSubject = new Subject();
+    this.error$ = this.errorSubject.asObservable();
   }
 
   read() {
-    this.dataSource.getPipelines().subscribe(
-      data => { 
-        this.readPipelineSubject.next(data);
-      }
-    );
+    this.dataSource.getPipelines()
+      .subscribe(
+        data => { 
+          this.readPipelineSubject.next(data);
+        },
+        error => this.errorSubject.next(error)
+      );
   }
 
+  randomError() {
+    this.errorSubject.next('Test Error at ' + new Date(Date.now()));
+  }
 }

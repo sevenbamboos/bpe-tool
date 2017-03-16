@@ -7,7 +7,6 @@ import { BPEApplication, PipelineType } from '../../model/share.model';
 import { Pipeline } from '../../model/pipeline.model';
 import { StaticDataSource as Datasource } from '../../model/static.datasource';
 import { PipelineService } from '../../model/pipeline.service';
-import 'rxjs/add/operator/finally';
 
 @Component({
   selector: 'app-search-screen',
@@ -24,28 +23,48 @@ export class SearchScreenComponent implements OnInit, OnDestroy {
 
   constructor( 
     private pipelineService: PipelineService,
-    private router: Router) { }
+    private router: Router) 
+  { }
 
   ngOnInit() {
+
+    const filterForApplication = selected => {
+      return pipeline => {
+        if (selected) {
+          return selected === pipeline.application;
+        } else {
+          return true;
+        }
+      };
+    };
+
+    const filterForType = selected => {
+      return pipeline => {
+        if (selected) {
+          return selected === pipeline.type;
+        } else {
+          return true;
+        }
+      };
+    };
+
     this.subscription = this.pipelineService.readPipeline$
       .subscribe(
         data => {
           this.pipelines = data.filter(
             data => {
-              Logger.info(JSON.stringify(data));
-              return this._addFilterForApplication(this.applicationSelected)(data)
-                && this._addFilterForType(this.typeSelected)(data);
+              return filterForApplication(this.applicationSelected)(data)
+                && filterForType(this.typeSelected)(data);
             }
           );
-          //TODO mock slow connection, delete in production
-          setTimeout(()=>this.loading = false, 0);
+          this.loading = false;
         },
         error => {
           Logger.error(error);
         }
       );
 
-    this.reload();
+    this.doSearch(null);
   }
 
   ngOnDestroy() {
@@ -67,35 +86,13 @@ export class SearchScreenComponent implements OnInit, OnDestroy {
   }
 
   doSearch(event) {
-    event = event || {application:null, type:null};
+    event = event || {application:null, type:null, search:true};
     this.applicationSelected = event.application;
     this.typeSelected = event.type;
-    this.reload();
-
+    if (event.search) {
+      this.loading = true;
+      this.pipelineService.read();
+    }
   }
 
-  reload() {
-    this.loading = true;
-    this.pipelineService.read();
-  }
-
-  private _addFilterForApplication = selected => {
-    return pipeline => {
-      if (selected) {
-        return selected === pipeline.application;
-      } else {
-        return true;
-      }
-    };
-  };
-
-  private _addFilterForType = selected => {
-    return pipeline => {
-      if (selected) {
-        return selected === pipeline.type;
-      } else {
-        return true;
-      }
-    };
-  };
 }

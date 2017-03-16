@@ -44,11 +44,11 @@ export class SearchFormComponent {
     this.handleFormChange();
   }
 
-  onFormChange(reload: boolean) {
+  onFormChange(search: boolean) {
     const event = {
       application: this.getApplicationControl().value,
       type: this.getTypeControl().value,
-      reload: reload
+      search: search
     };
     this.search.emit(event);
   }
