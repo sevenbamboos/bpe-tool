@@ -1,54 +1,34 @@
+import { Injectable } from "@angular/core";
+
 enum LOGLEVEL {
   DEBUG = 1, INFO, WARN, ERROR 
 }
 
-// Log service that can be configured with console or window(alert)
+export const Logger = (function Logger() {
 
-export class Logger {
-
-  // properties
-
-  debug = this.log.bind(this, 'global', LOGLEVEL.DEBUG);
-  info = this.log.bind(this, 'global', LOGLEVEL.INFO);
-  warn = this.log.bind(this, 'global', LOGLEVEL.WARN);
-  error = this.log.bind(this, 'global', LOGLEVEL.ERROR);
-
-  private currentLevel: LOGLEVEL = LOGLEVEL.DEBUG; 
-  private currentAppender: string;
-
-  constructor(level: LOGLEVEL, appender: string) {
-    this.currentLevel = level;
-    this.currentAppender = appender;
-  }
-
-  // methods
+  const currentLevel: LOGLEVEL = LOGLEVEL.DEBUG; 
 
   //TODO take into account loggerName
-  private log(loggerName, level, msg) {
-
-    if (this.currentLevel > level) {
+  function _log(appender, loggerName, level, msg) {
+    if (currentLevel > level) {
       return;
     }
-
     const appenders = {
       'console': console.log,
-      'window': window.alert
+      'alert': window.alert
     };
-
-    let prefix = `${new Date(Date.now()).toTimeString()} [${LOGLEVEL[level]}] `;
-
-    appenders[this.currentAppender].call(this, prefix + msg);
+    appenders[appender].call(this, msg);
 
     //To make it K-combinator instead of returning void
     return msg;
   }
-}
 
-const ConsoleLogger = new Logger(LOGLEVEL.INFO, 'console');
-const WindowLogger = new Logger(LOGLEVEL.WARN, 'window');
-const myLogger = ConsoleLogger;
+  const log = _log.bind(this, 'console');
 
-export const debug = (msg) => myLogger.debug(msg);
-export const info = (msg) => myLogger.info(msg);
-export const warn = (msg) => myLogger.warn(msg);
-export const error = (msg) => myLogger.error(msg);
+  return {
+    debug: log.bind(this, null, LOGLEVEL.DEBUG),
+    info: log.bind(this, null, LOGLEVEL.INFO),
+    warn: log.bind(this, null, LOGLEVEL.WARN),
+    error: log.bind(this, null, LOGLEVEL.ERROR),
+  };
+}) ();

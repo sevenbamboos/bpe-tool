@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
     CommonModule
   ],
   declarations: [],
-  providers: [
-  ]
+  providers: []
 })
 export class UtilModule { }
