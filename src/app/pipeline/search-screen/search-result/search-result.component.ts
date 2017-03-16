@@ -1,5 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Pipeline } from '../../../model/pipeline.model';
+import { PipelineService } from '../../../model/pipeline.service';
+import { Logger } from '../../../util/logger.service';
 
 @Component({
   selector: 'search-result',
@@ -8,10 +11,13 @@ import { Pipeline } from '../../../model/pipeline.model';
 })
 export class SearchResultComponent {
 
-  @Input('data') pipelines: Pipeline[];
   selectedPipeline: Pipeline;
+  @Input() pipelines: Pipeline[];
 
   @Output() onSelect: EventEmitter<any> = new EventEmitter();
+
+  constructor(private pipelineService: PipelineService) {
+  }
 
   onPipelineEdit() {
     this.sendOutEvent(this.selectedPipeline.id, 'edit');

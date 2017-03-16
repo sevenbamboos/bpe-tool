@@ -11,7 +11,7 @@ import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } fr
 })
 export class SearchFormComponent {
 
-  @Output() onSearch: EventEmitter<any> = new EventEmitter();
+  @Output() search: EventEmitter<any> = new EventEmitter();
 
   @Input() loading: boolean = false;
 
@@ -50,7 +50,7 @@ export class SearchFormComponent {
       type: this.getTypeControl().value,
       reload: reload
     };
-    this.onSearch.emit(event);
+    this.search.emit(event);
   }
 
   private createForm() {

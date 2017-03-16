@@ -1,11 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subscription } from 'rxjs';
 import { Logger } from '../../util/logger.service';
 import { BPEApplication, PipelineType } from '../../model/share.model';
 import { Pipeline } from '../../model/pipeline.model';
 import { StaticDataSource as Datasource } from '../../model/static.datasource';
+import { PipelineService } from '../../model/pipeline.service';
 import 'rxjs/add/operator/finally';
 
 @Component({
@@ -13,20 +14,43 @@ import 'rxjs/add/operator/finally';
   templateUrl: './search-screen.component.html',
   styleUrls: []
 })
-export class SearchScreenComponent implements OnInit {
+export class SearchScreenComponent implements OnInit, OnDestroy {
 
   loading = false;
-  originalPipelines: Pipeline[] = [];
   pipelines: Pipeline[] = [];
+  private subscription: Subscription;
+  private applicationSelected: BPEApplication;
+  private typeSelected: PipelineType;
 
   constructor( 
-    private ds: Datasource, 
+    private pipelineService: PipelineService,
     private router: Router) { }
 
   ngOnInit() {
-    Logger.info('Search screen onInit');
+    this.subscription = this.pipelineService.readPipeline$
+      .subscribe(
+        data => {
+          this.pipelines = data.filter(
+            data => {
+              Logger.info(JSON.stringify(data));
+              return this._addFilterForApplication(this.applicationSelected)(data)
+                && this._addFilterForType(this.typeSelected)(data);
+            }
+          );
+          //TODO mock slow connection, delete in production
+          setTimeout(()=>this.loading = false, 0);
+        },
+        error => {
+          Logger.error(error);
+        }
+      );
+
     this.reload();
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  } 
 
   doAction(event) {
     const {id, eventName} = event;
@@ -44,33 +68,15 @@ export class SearchScreenComponent implements OnInit {
 
   doSearch(event) {
     event = event || {application:null, type:null};
-    const {application, type, reload} = event;
+    this.applicationSelected = event.application;
+    this.typeSelected = event.type;
+    this.reload();
 
-    if (reload) {
-      this.reload();
-    } else {
-      this.pipelines = this.originalPipelines.filter(x=>{
-        return this._addFilterForApplication(application)(x)
-          && this._addFilterForType(type)(x);
-      });
-    }
   }
 
   reload() {
     this.loading = true;
-    this.ds.getPipelines().subscribe(
-      data => {
-        this.originalPipelines = data;
-        this.doSearch(null);
-        
-        //TODO mock slow connection, delete in production
-        setTimeout(()=>this.loading = false, 3000);
-
-      },
-      error => {
-        Logger.error(error);
-      }
-    );
+    this.pipelineService.read();
   }
 
   private _addFilterForApplication = selected => {
