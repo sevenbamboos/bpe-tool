@@ -11,7 +11,7 @@ import 'rxjs/add/operator/finally';
 @Component({
   selector: 'app-search-screen',
   templateUrl: './search-screen.component.html',
-  styleUrls: ['./search-screen.component.css']
+  styleUrls: []
 })
 export class SearchScreenComponent implements OnInit {
 

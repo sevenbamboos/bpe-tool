@@ -7,7 +7,7 @@ import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } fr
 @Component({
   selector: 'search-form',
   templateUrl: './search-form.component.html',
-  styleUrls: ['./search-form.component.css']
+  styleUrls: []
 })
 export class SearchFormComponent {
 

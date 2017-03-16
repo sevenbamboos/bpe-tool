@@ -4,7 +4,7 @@ import { Pipeline } from '../../../model/pipeline.model';
 @Component({
   selector: 'search-result',
   templateUrl: './search-result.component.html',
-  styleUrls: ['./search-result.component.css']
+  styleUrls: []
 })
 export class SearchResultComponent {
 

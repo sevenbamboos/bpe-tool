@@ -9,7 +9,7 @@ import 'rxjs/add/operator/switchMap';
 @Component({
   selector: 'app-detail-screen',
   templateUrl: './detail-screen.component.html',
-  styleUrls: ['./detail-screen.component.css']
+  styleUrls: []
 })
 export class DetailScreenComponent implements OnInit {
 
