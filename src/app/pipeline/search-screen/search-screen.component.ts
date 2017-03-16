@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import * as Logger from '../../util/logger.service';
+import { Logger } from '../../util/logger.service';
 import { BPEApplication, PipelineType } from '../../model/share.model';
 import { Pipeline } from '../../model/pipeline.model';
 import { StaticDataSource as Datasource } from '../../model/static.datasource';

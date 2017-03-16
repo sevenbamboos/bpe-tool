@@ -28,5 +28,6 @@ export const Logger = (function Logger() {
     info: log.bind(this, null, LOGLEVEL.INFO),
     warn: log.bind(this, null, LOGLEVEL.WARN),
     error: log.bind(this, null, LOGLEVEL.ERROR),
+    alert: _log.bind(this, 'alert', null, LOGLEVEL.ERROR)
   };
 }) ();

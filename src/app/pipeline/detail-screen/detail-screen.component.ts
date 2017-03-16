@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import * as Logger from '../../util/logger.service';
+import { Logger } from '../../util/logger.service';
 import { Pipeline } from '../../model/pipeline.model';
 import { StaticDataSource as Datasource } from '../../model/static.datasource';
 import 'rxjs/add/operator/switchMap';
@@ -37,6 +37,6 @@ export class DetailScreenComponent implements OnInit {
   }
 
   onSave() {
-    Logger.warn('Not implemented');
+    Logger.alert('Not implemented');
   }
 }
