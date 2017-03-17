@@ -25,6 +25,7 @@ export class PipelineService {
 
   read() {
     this.dataSource.getPipelines()
+      .catch(error => Observable.throw(error))
       .subscribe(
         data => { 
           this.readPipelineSubject.next(data);
