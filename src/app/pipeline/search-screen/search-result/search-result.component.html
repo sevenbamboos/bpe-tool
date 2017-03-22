@@ -9,7 +9,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let pipeline of pipelines; let index = index;" (mouseover)="selectedPipeline=pipeline" [ngClass]="{'table-info': pipeline===selectedPipeline}">
+    <tr *ngFor="let pipeline of (pipelines$ | async); let index = index;" (mouseover)="selectedPipeline=pipeline" [ngClass]="{'table-info': pipeline===selectedPipeline}">
       <td>{{index+1}}</td>
       <td>{{pipeline.name}}</td>
       <td>{{pipeline.getApplicationValue()}}</td>

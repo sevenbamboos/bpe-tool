@@ -1,7 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { Logger } from '../../../util/logger.service';
+import { PipelineService } from '../../../model/pipeline.service';
+import { AppState } from '../../../model/pipeline.reducer';
 import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } from '../../../model/share.model';
 
 @Component({
@@ -9,11 +12,10 @@ import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } fr
   templateUrl: './search-form.component.html',
   styleUrls: []
 })
-export class SearchFormComponent {
+export class SearchFormComponent implements OnInit, OnDestroy {
 
-  @Output() search: EventEmitter<any> = new EventEmitter();
-
-  @Input() loading: boolean = false;
+  private bpeApplicationSelected$: Observable<BPEApplication>;
+  private subscription: Subscription;
 
   applications = BPEApplicationList.map(li => {
     if (li === null) {
@@ -38,19 +40,28 @@ export class SearchFormComponent {
   searchForm: FormGroup;
 
   constructor(
+    private pipelineService: PipelineService,
+    private store: Store<AppState>,
     private formBuilder: FormBuilder
-  ) { 
+  ) {
+    this.bpeApplicationSelected$ = store.select("bpeApplicationSelected"); 
     this.createForm();
-    this.handleFormChange();
   }
 
-  onFormChange(search: boolean) {
-    const event = {
-      application: this.getApplicationControl().value,
-      type: this.getTypeControl().value,
-      search: search
-    };
-    this.search.emit(event);
+  ngOnInit() {
+    this.subscription = this.bpeApplicationSelected$.subscribe(
+      (data) => this.getApplicationControl().setValue(data)
+    );
+
+    this.doSearch();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  doSearch() {
+    this.pipelineService.read(this.getApplicationControl().value);
   }
 
   private createForm() {
@@ -58,15 +69,6 @@ export class SearchFormComponent {
       applicationSelect: '',
       typeSelect: '',
     });
-  }
-
-  private handleFormChange() {
-    this.getApplicationControl().valueChanges.forEach(
-      (value: string) => this.onFormChange(false)
-    );
-    this.getTypeControl().valueChanges.forEach(
-      (value: string) => this.onFormChange(false)
-    );
   }
 
   private getApplicationControl() {

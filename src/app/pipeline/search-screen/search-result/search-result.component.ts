@@ -1,8 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Pipeline } from '../../../model/pipeline.model';
 import { PipelineService } from '../../../model/pipeline.service';
 import { Logger } from '../../../util/logger.service';
+import { AppState } from '../../../model/pipeline.reducer';
 
 @Component({
   selector: 'search-result',
@@ -12,22 +15,21 @@ import { Logger } from '../../../util/logger.service';
 export class SearchResultComponent {
 
   selectedPipeline: Pipeline;
-  @Input() pipelines: Pipeline[];
+  pipelines$: Observable<Array<Pipeline>>;
 
-  @Output() onSelect: EventEmitter<any> = new EventEmitter();
-
-  constructor(private pipelineService: PipelineService) {
+  constructor(
+    private pipelineService: PipelineService,
+    private store: Store<AppState>, 
+    private router: Router) {
+    this.pipelines$ = store.select("pipelines");
   }
 
   onPipelineEdit() {
-    this.sendOutEvent(this.selectedPipeline.id, 'edit');
+    this.router.navigate(['pipeline/detail', this.selectedPipeline.id]);
   }
 
   onPipelineDelete() {
-    this.sendOutEvent(this.selectedPipeline.id, 'delete');
+    this.pipelineService.delete(this.selectedPipeline);
   }
 
-  private sendOutEvent(id: number, eventName: string) {
-    this.onSelect.emit({id, eventName});
-  }
 }
