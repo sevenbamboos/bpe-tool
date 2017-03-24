@@ -38,11 +38,8 @@ export function pipelineReducer(state: Array<Pipeline> = [], action: Action): Ar
 
 export function pipelineSearchFormReducer(state: PipelineSearchForm = pipelineSearchFormInitValue, action: Action): PipelineSearchForm {
 	switch (action.type) {
-		case ActionTypes.PipelineSearchFormBPEApplicationActionType: 
-      return Object.assign({}, state, {bpeApplicationSelected: action.payload});
-
-    case ActionTypes.PipelineSearchFormPipelineTypeActionType:
-      return Object.assign({}, state, {pipelineTypeSelected: action.payload});
+		case ActionTypes.PipelineSearchFormActionType: 
+      return Object.assign({}, state, {bpeApplicationSelected: action.payload.bpeApplicationSelected, pipelineTypeSelected: action.payload.pipelineTypeSelected});
 
 		default:
 			return state;

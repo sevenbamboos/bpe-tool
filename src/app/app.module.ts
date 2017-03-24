@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
 
 import { AppComponent } from './app.component';
 import { UtilModule } from './util/util.module';
@@ -15,6 +16,7 @@ import { SearchScreenComponent as PipelineSearchScreen } from './pipeline/search
 import { DetailScreenComponent as PipelineDetailScreen } from './pipeline/detail-screen/detail-screen.component';
 
 import { pipelineReducer, pipelineSearchFormReducer } from './model/pipeline.reducer';
+import { PipelineEffects } from './model/pipeline.effects'; 
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { pipelineReducer, pipelineSearchFormReducer } from './model/pipeline.red
       pipelineSearchForm: pipelineSearchFormReducer
     }),
     StoreDevtoolsModule.instrumentOnlyWithExtension(),
+
+    EffectsModule.run(PipelineEffects),
 
     RouterModule.forRoot([
       {

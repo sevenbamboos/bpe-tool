@@ -40,8 +40,19 @@ export class StaticDataSource {
       BPEApplication.DICOM_Inbound, PipelineType.DICOM_MPPS),
   ];
 
-  getPipelines(): Observable<Pipeline[]> {
-    return Observable.from([this._pipelines]);
+  getPipelines(bpeApplication?: BPEApplication, pipelineType?: PipelineType): Observable<Pipeline[]> {
+    return Observable.from(this._pipelines)
+      .filter((x: Pipeline) => {
+        let filtered = true;
+        if (bpeApplication) {
+          filtered = filtered && x.application === bpeApplication;
+        }
+        if (pipelineType) {
+          filtered = filtered && x.type === pipelineType;
+        }
+        return filtered;
+      })
+      .toArray();
   }
 
   getPipelineByID(id: number): Observable<Pipeline> {

@@ -24,7 +24,10 @@
 
   <div class="col-md-3 form-group">
     <label>
-      <button class="form-control" [disabled]="loading" (click)="doSearch()">Reload</button>
+      <button class="form-control" [disabled]="loading" (click)="doSearch()">Search</button>
+    </label>
+    <label>
+      <button class="form-control" [disabled]="loading" (click)="doReset()">Reset</button>
     </label>
   </div>
   </fieldset>

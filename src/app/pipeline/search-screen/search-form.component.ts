@@ -2,10 +2,10 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Logger } from '../../../util/logger.service';
-import { PipelineService } from '../../../model/pipeline.service';
-import { AppState, PipelineSearchForm, AppSelector } from '../../../model/pipeline.reducer';
-import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } from '../../../model/share.model';
+import { Logger } from '../../util/logger.service';
+import { AppState, PipelineSearchForm, AppSelector } from '../../model/pipeline.reducer';
+import * as action from '../../model/pipeline.action';
+import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } from '../../model/share.model';
 
 @Component({
   selector: 'search-form',
@@ -40,7 +40,6 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   searchForm: FormGroup;
 
   constructor(
-    private pipelineService: PipelineService,
     private store: Store<AppState>,
     private formBuilder: FormBuilder
   ) {
@@ -68,7 +67,14 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       bpeApplicationSelected: this.getApplicationControl().value,
       pipelineTypeSelected: this.getTypeControl().value,
     };
-    this.pipelineService.read(searchCriterion);
+    this.store.dispatch(new action.PipelineSearchFormAction(searchCriterion));
+    this.store.dispatch(new action.PipelineSearchAction(searchCriterion));
+  }
+
+  doReset() {
+    this.getApplicationControl().setValue(0);
+    this.getTypeControl().setValue(0);
+    this.doSearch();
   }
 
   private createForm() {

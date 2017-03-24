@@ -2,10 +2,11 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { Subscription, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Pipeline } from '../../../model/pipeline.model';
-import { PipelineService } from '../../../model/pipeline.service';
-import { Logger } from '../../../util/logger.service';
-import { AppState, AppSelector } from '../../../model/pipeline.reducer';
+import { Pipeline } from '../../model/pipeline.model';
+import { PipelineService } from '../../model/pipeline.service';
+import { Logger } from '../../util/logger.service';
+import { AppState, AppSelector } from '../../model/pipeline.reducer';
+import * as action from '../../model/pipeline.action';
 
 @Component({
   selector: 'search-result',
@@ -18,7 +19,6 @@ export class SearchResultComponent {
   pipelines$: Observable<Array<Pipeline>>;
 
   constructor(
-    private pipelineService: PipelineService,
     private store: Store<AppState>, 
     private router: Router) {
     this.pipelines$ = store.select(AppSelector.pipelines);
@@ -29,7 +29,7 @@ export class SearchResultComponent {
   }
 
   onPipelineDelete() {
-    this.pipelineService.delete(this.selectedPipeline);
+    this.store.dispatch(new action.PipelineDeleteAction(this.selectedPipeline));
   }
 
 }
