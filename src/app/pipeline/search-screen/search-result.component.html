@@ -15,10 +15,17 @@
       <td>{{pipeline.getApplicationValue()}}</td>
       <td>{{pipeline.getTypeValue()}}</td>
       <td>
-        <button (click)="onPipelineEdit()">Edit</button>
         <button (click)="onPipelineActiveToggle()">{{activeActionValue(pipeline)}}</button>
-        <button (click)="onPipelineDelete()">Delete</button>
       </td>
     </tr>
   </tbody> 
 </table>
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-10">
+      <button (click)="onPipelineEdit()">Edit</button>
+      <button (click)="onPipelineDelete()">X</button>
+    </div>
+  </div>
+</div>

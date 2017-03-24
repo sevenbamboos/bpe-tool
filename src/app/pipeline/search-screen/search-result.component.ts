@@ -24,7 +24,7 @@ export class SearchResultComponent {
   }
 
   activeActionValue(pipeline: Pipeline) {
-    return pipeline.active ? "Inactivate" : "Activate";
+    return pipeline.active ? "!" : "^";
   }
 
   onPipelineEdit() {
