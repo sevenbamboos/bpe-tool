@@ -3,7 +3,8 @@ import { Action } from '@ngrx/store';
 import { Effect, Actions, toPayload } from '@ngrx/effects';
 import { Observable, Subject } from 'rxjs';
 import { StaticDataSource as DataSource } from './static.datasource';
-import { PipelineSearchForm } from './pipeline.reducer';
+import { PipelineSearchForm } from './store';
+import { Pipeline } from './pipeline.model';
 import * as action from './pipeline.action';
 
 @Injectable()
@@ -15,9 +16,19 @@ export class PipelineEffects {
     .debounceTime(300)
     .map(toPayload)
     .switchMap((searchForm: PipelineSearchForm) => {
-      const {bpeApplicationSelected, pipelineTypeSelected} = searchForm;
-      return this.dataSource.getPipelines(bpeApplicationSelected, pipelineTypeSelected)
+      const {bpeApplicationSelected, pipelineTypeSelected, inactiveChecked} = searchForm;
+      return this.dataSource.getPipelines(bpeApplicationSelected, pipelineTypeSelected, inactiveChecked)
         .map(pipelines => new action.PipelineLoadAction(pipelines));
+    });
+
+  @Effect()
+  toggleActive$: Observable<Action> = this.actions$
+    .ofType(action.ActionTypes.PipelineActiveToggleActionType)
+    .debounceTime(300)
+    .map(toPayload)
+    .switchMap((pipeline: Pipeline) => {
+      return this.dataSource.toggleActive(pipeline)
+        .map((x: Pipeline) => new action.PipelineActiveToggleSuccessAction(x));
     });
 
   constructor(

@@ -2,26 +2,7 @@ import { ActionReducer, Action, Store } from '@ngrx/store';
 import { BPEApplication, PipelineType } from './share.model';
 import { Pipeline } from './pipeline.model';
 import { ActionTypes } from './pipeline.action';
-
-export interface PipelineSearchForm {
-  bpeApplicationSelected: BPEApplication;
-  pipelineTypeSelected: PipelineType;
-}
-
-const pipelineSearchFormInitValue: PipelineSearchForm = {
-  bpeApplicationSelected: 0,
-  pipelineTypeSelected: 0,
-};
-
-export interface AppState {
-  pipelines: Array<Pipeline>;
-  pipelineSearchForm: PipelineSearchForm;
-}
-
-export const AppSelector = {
-  pipelines: (state: AppState) => state.pipelines,
-  pipelineSearchForm: (state: AppState) => state.pipelineSearchForm,
-}
+import { PipelineSearchForm, pipelineSearchFormInitValue } from './store';
 
 export function pipelineReducer(state: Array<Pipeline> = [], action: Action): Array<Pipeline> {
 	switch (action.type) {
@@ -31,6 +12,16 @@ export function pipelineReducer(state: Array<Pipeline> = [], action: Action): Ar
     case ActionTypes.PipelineDeleteActionType:
       return state.filter(p => p.id !== action.payload.id);
 
+    case ActionTypes.PipelineActiveToggleSuccessActionType: {
+			const index = state.findIndex((x:Pipeline) => x.id === action.payload.id);
+			if (index !== -1) {
+				const newState = [...state.slice(0, index), ...action.payload, ...state.slice(index+1)];
+				return newState;
+			} else {
+				return state;
+			}
+		}
+
 		default:
 			return state;
 	}
@@ -39,7 +30,7 @@ export function pipelineReducer(state: Array<Pipeline> = [], action: Action): Ar
 export function pipelineSearchFormReducer(state: PipelineSearchForm = pipelineSearchFormInitValue, action: Action): PipelineSearchForm {
 	switch (action.type) {
 		case ActionTypes.PipelineSearchFormActionType: 
-      return Object.assign({}, state, {bpeApplicationSelected: action.payload.bpeApplicationSelected, pipelineTypeSelected: action.payload.pipelineTypeSelected});
+      return Object.assign({}, state, {bpeApplicationSelected: action.payload.bpeApplicationSelected, pipelineTypeSelected: action.payload.pipelineTypeSelected, inactiveChecked: action.payload.inactiveChecked});
 
 		default:
 			return state;

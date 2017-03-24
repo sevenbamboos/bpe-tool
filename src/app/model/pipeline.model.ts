@@ -6,8 +6,14 @@ export class Pipeline {
     public id?: number,
     public name?: string,
     public application?: BPEApplication,
-    public type?: PipelineType
-  ) {}
+    public type?: PipelineType,
+    public active?: boolean
+  ) {
+  }
+
+  toggleActive(): Pipeline {
+    return Object.assign(new Pipeline(), this, {active: !this.active}) as Pipeline;
+  }
 
   getApplicationValue() {
     return BPEApplication[this.application];

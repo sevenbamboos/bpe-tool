@@ -16,6 +16,7 @@
       <td>{{pipeline.getTypeValue()}}</td>
       <td>
         <button (click)="onPipelineEdit()">Edit</button>
+        <button (click)="onPipelineActiveToggle()">{{activeActionValue(pipeline)}}</button>
         <button (click)="onPipelineDelete()">Delete</button>
       </td>
     </tr>

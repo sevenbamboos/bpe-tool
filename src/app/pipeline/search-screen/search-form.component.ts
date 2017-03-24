@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Logger } from '../../util/logger.service';
-import { AppState, PipelineSearchForm, AppSelector } from '../../model/pipeline.reducer';
+import { AppState, PipelineSearchForm, AppSelector } from '../../model/store';
 import * as action from '../../model/pipeline.action';
 import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } from '../../model/share.model';
 
@@ -52,6 +52,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       (form) => {
         this.getApplicationControl().setValue(form.bpeApplicationSelected);
         this.getTypeControl().setValue(form.pipelineTypeSelected);
+        this.getInactiveControl().setValue(form.inactiveChecked);
       }
     );
 
@@ -66,6 +67,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     const searchCriterion: PipelineSearchForm = {
       bpeApplicationSelected: this.getApplicationControl().value,
       pipelineTypeSelected: this.getTypeControl().value,
+      inactiveChecked: this.getInactiveControl().value,
     };
     this.store.dispatch(new action.PipelineSearchFormAction(searchCriterion));
     this.store.dispatch(new action.PipelineSearchAction(searchCriterion));
@@ -74,6 +76,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   doReset() {
     this.getApplicationControl().setValue(0);
     this.getTypeControl().setValue(0);
+    this.getInactiveControl().setValue(false);
     this.doSearch();
   }
 
@@ -81,6 +84,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     this.searchForm = this.formBuilder.group({
       applicationSelect: '',
       typeSelect: '',
+      inactiveCheck: false,
     });
   }
 
@@ -90,5 +94,9 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
   private getTypeControl() {
     return this.searchForm.get('typeSelect');
+  }
+
+  private getInactiveControl() {
+    return this.searchForm.get('inactiveCheck');
   }
 }
