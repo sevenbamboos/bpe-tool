@@ -5,7 +5,8 @@ import { BPEApplication } from './share.model';
 import { Pipeline } from './pipeline.model';
 import { Logger } from '../util/logger.service';
 import { StaticDataSource as DataSource } from './static.datasource';
-import { AppState, PIPELINE_LOAD, PIPELINE_DELETE, BPE_APPLICATION_SELECTED } from './pipeline.reducer';
+import { AppState, PipelineSearchForm } from './pipeline.reducer';
+import * as action from './pipeline.action';
 
 @Injectable()
 export class PipelineService {
@@ -21,23 +22,36 @@ export class PipelineService {
     this.error$ = this.errorSubject.asObservable();
   }
 
-  read(bpeApplication?: BPEApplication) {
-    this.store.dispatch({ type: BPE_APPLICATION_SELECTED, payload: bpeApplication });
+  read(searchCriterion?: PipelineSearchForm) {
+
+    const { bpeApplicationSelected, pipelineTypeSelected } = searchCriterion;
+
+    this.store.dispatch(new action.PipelineSearchFormBPEApplicationAction(bpeApplicationSelected));
+    this.store.dispatch(new action.PipelineSearchFormPipelineTypeAction(pipelineTypeSelected));
+    //this.store.dispatch({ type: BPE_APPLICATION_SELECTED, payload: bpeApplication });
+
     this.dataSource.getPipelines()
       .catch(error => Observable.throw(error))
       .subscribe(
         data => { 
           const resultAfterFilter = data.filter(
             x => {
-              if (bpeApplication) {
-                return x.application === bpeApplication;
-              } else {
-                return true;
+              let result = true;
+
+              if (bpeApplicationSelected) {
+                result = result && (x.application === bpeApplicationSelected);
+              } 
+              
+              if (pipelineTypeSelected) {
+                result = result && (x.type === pipelineTypeSelected);
               }
+
+              return result;
             }  
           ); 
 
-          this.store.dispatch({type: PIPELINE_LOAD, payload: resultAfterFilter});
+          this.store.dispatch(new action.PipelineLoadAction(resultAfterFilter));
+          //this.store.dispatch({type: PIPELINE_LOAD, payload: resultAfterFilter});
         },
         error => this.errorSubject.next(error),
       );
@@ -45,7 +59,8 @@ export class PipelineService {
 
   delete(pipeline: Pipeline) {
     // TODO remote delete request
-    this.store.dispatch({ type: PIPELINE_DELETE, payload: pipeline}); 
+    this.store.dispatch(new action.PipelineDeleteAction(pipeline));
+    //this.store.dispatch({ type: PIPELINE_DELETE, payload: pipeline}); 
   }
 
   randomError() {

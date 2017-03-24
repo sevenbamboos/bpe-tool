@@ -14,7 +14,7 @@ import { PipelineModule } from './pipeline/pipeline.module';
 import { SearchScreenComponent as PipelineSearchScreen } from './pipeline/search-screen/search-screen.component';
 import { DetailScreenComponent as PipelineDetailScreen } from './pipeline/detail-screen/detail-screen.component';
 
-import { pipelineReducer, bpeApplicationSelectedReducer } from './model/pipeline.reducer';
+import { pipelineReducer, pipelineSearchFormReducer } from './model/pipeline.reducer';
 
 @NgModule({
   declarations: [
@@ -30,7 +30,7 @@ import { pipelineReducer, bpeApplicationSelectedReducer } from './model/pipeline
 
     StoreModule.provideStore({
       pipelines: pipelineReducer,
-      bpeApplicationSelected: bpeApplicationSelectedReducer
+      pipelineSearchForm: pipelineSearchFormReducer
     }),
     StoreDevtoolsModule.instrumentOnlyWithExtension(),
 

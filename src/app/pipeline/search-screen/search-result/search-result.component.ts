@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Pipeline } from '../../../model/pipeline.model';
 import { PipelineService } from '../../../model/pipeline.service';
 import { Logger } from '../../../util/logger.service';
-import { AppState } from '../../../model/pipeline.reducer';
+import { AppState, AppSelector } from '../../../model/pipeline.reducer';
 
 @Component({
   selector: 'search-result',
@@ -21,7 +21,7 @@ export class SearchResultComponent {
     private pipelineService: PipelineService,
     private store: Store<AppState>, 
     private router: Router) {
-    this.pipelines$ = store.select("pipelines");
+    this.pipelines$ = store.select(AppSelector.pipelines);
   }
 
   onPipelineEdit() {

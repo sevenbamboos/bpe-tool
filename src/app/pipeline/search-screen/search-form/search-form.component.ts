@@ -4,7 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Logger } from '../../../util/logger.service';
 import { PipelineService } from '../../../model/pipeline.service';
-import { AppState } from '../../../model/pipeline.reducer';
+import { AppState, PipelineSearchForm, AppSelector } from '../../../model/pipeline.reducer';
 import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } from '../../../model/share.model';
 
 @Component({
@@ -14,7 +14,7 @@ import { BPEApplication, PipelineType, BPEApplicationList, PipelineTypeList } fr
 })
 export class SearchFormComponent implements OnInit, OnDestroy {
 
-  private bpeApplicationSelected$: Observable<BPEApplication>;
+  private searchForm$: Observable<PipelineSearchForm>;
   private subscription: Subscription;
 
   applications = BPEApplicationList.map(li => {
@@ -44,13 +44,16 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     private store: Store<AppState>,
     private formBuilder: FormBuilder
   ) {
-    this.bpeApplicationSelected$ = store.select("bpeApplicationSelected"); 
+    this.searchForm$ = store.select(AppSelector.pipelineSearchForm); 
     this.createForm();
   }
 
   ngOnInit() {
-    this.subscription = this.bpeApplicationSelected$.subscribe(
-      (data) => this.getApplicationControl().setValue(data)
+    this.subscription = this.searchForm$.subscribe(
+      (form) => {
+        this.getApplicationControl().setValue(form.bpeApplicationSelected);
+        this.getTypeControl().setValue(form.pipelineTypeSelected);
+      }
     );
 
     this.doSearch();
@@ -61,7 +64,11 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   }
 
   doSearch() {
-    this.pipelineService.read(this.getApplicationControl().value);
+    const searchCriterion: PipelineSearchForm = {
+      bpeApplicationSelected: this.getApplicationControl().value,
+      pipelineTypeSelected: this.getTypeControl().value,
+    };
+    this.pipelineService.read(searchCriterion);
   }
 
   private createForm() {
