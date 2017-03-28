@@ -9,14 +9,12 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 
 import { AppComponent } from './app.component';
-import { UtilModule } from './util/util.module';
-import { ModelModule } from './model/model.module';
-import { PipelineModule } from './pipeline/pipeline.module';
-import { SearchScreenComponent as PipelineSearchScreen } from './pipeline/search-screen/search-screen.component';
-import { DetailScreenComponent as PipelineDetailScreen } from './pipeline/detail-screen/detail-screen.component';
+import { AppRoutingModule } from "./app-routing.module";
+import { AppStoreModule } from "./store/store.module";
+import { CoreModule } from "./core/core.module";
 
-import { pipelineReducer, pipelineSearchFormReducer } from './model/pipeline.reducer';
-import { PipelineEffects } from './model/pipeline.effects'; 
+import { PipelinesModule } from "./pipelines/pipelines.module";
+import { ServicesModule } from "./services/services.module";
 
 @NgModule({
   declarations: [
@@ -26,33 +24,13 @@ import { PipelineEffects } from './model/pipeline.effects';
     BrowserModule,
     FormsModule,
     HttpModule,
-    UtilModule,
-    ModelModule,
-    PipelineModule,
 
-    StoreModule.provideStore({
-      pipelines: pipelineReducer,
-      pipelineSearchForm: pipelineSearchFormReducer
-    }),
-    StoreDevtoolsModule.instrumentOnlyWithExtension(),
+    CoreModule,
+    AppStoreModule,
+    AppRoutingModule,
+    PipelinesModule,
+    ServicesModule
 
-    EffectsModule.run(PipelineEffects),
-
-    RouterModule.forRoot([
-      {
-        path: '', 
-        redirectTo: '/pipeline/list', 
-        pathMatch: 'full'
-      },
-      {
-        path: 'pipeline/list',
-        component: PipelineSearchScreen 
-      },
-      {
-        path: 'pipeline/detail/:id',
-        component: PipelineDetailScreen 
-      }
-    ]),
   ],
   providers: [],
   bootstrap: [AppComponent]
