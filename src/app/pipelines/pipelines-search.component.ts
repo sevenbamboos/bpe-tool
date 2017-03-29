@@ -11,5 +11,10 @@ export class PipelinesSearchComponent implements OnInit {
 
   ngOnInit() {
   }
+  display: boolean = false;
+
+  showDialog() {
+    this.display = true;
+  }
 
 }

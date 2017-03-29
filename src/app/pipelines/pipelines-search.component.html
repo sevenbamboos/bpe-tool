@@ -1,3 +1,27 @@
 <p>
   search works!
 </p>
+
+
+<p-dialog header="Create New Pipeline" [(visible)]="display" modal="true">
+  <div class="form-group form-inline">
+    <label>BPE Application
+      <select class="form-control">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+      </select>
+    </label>
+  </div>
+  <div class="form-group form-inline">
+    <label>Pipeline Type
+      <select class="form-control">
+        <option>a</option>
+        <option>b</option>
+        <option>c</option>
+      </select>
+    </label>
+  </div>
+</p-dialog>
+
+<button type="text" (click)="showDialog()" pButton icon="fa-external-link-square" label="Show">Create</button>

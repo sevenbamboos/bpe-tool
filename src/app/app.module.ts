@@ -1,13 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+//import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { RouterModule } from '@angular/router';
+//import { RouterModule } from '@angular/router';
 
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { EffectsModule } from '@ngrx/effects';
-
+import { SharedModule } from './shared/shared.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from "./app-routing.module";
 import { AppStoreModule } from "./store/store.module";
@@ -22,9 +19,9 @@ import { ServicesModule } from "./services/services.module";
   ],
   imports: [
     BrowserModule,
-    FormsModule,
     HttpModule,
 
+    SharedModule,
     CoreModule,
     AppStoreModule,
     AppRoutingModule,

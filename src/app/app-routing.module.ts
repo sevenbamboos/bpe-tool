@@ -4,9 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { PipelinesSearchComponent, PipelinesEditComponent } from './pipelines';
 import { ServicesSearchComponent, ServicesEditComponent } from './services';
 
-/**
- * Root routing module.
- */
 const appRoutes: Routes = [
   { path: 'pipelines/search', component: PipelinesSearchComponent, },
   { path: 'pipelines/edit/:id', component: PipelinesEditComponent },

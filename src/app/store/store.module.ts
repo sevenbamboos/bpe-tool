@@ -1,5 +1,5 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
-import { EffectsModule } from '@ngrx/effects';
+import { EffectsModule } from '@ngrx/effects'
 import { RouterStoreModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -12,7 +12,7 @@ import { reducer, effects, services } from '.';
     StoreModule.provideStore(reducer),
     RouterStoreModule.connectRouter(),
     StoreDevtoolsModule.instrumentOnlyWithExtension(),
-    ...effects.map(type => EffectsModule.run(type))
+    ...effects(),
   ],
 
   exports: [

@@ -1,3 +1,4 @@
+import { EffectsModule } from '@ngrx/effects';
 
 import * as pipelines from './pipelines';
 //import * as services from './services';
@@ -16,10 +17,12 @@ export const reducer = {
   pipelines: pipelines.reducer,
 };
 
-export const effects = [
-  pipelines.Effects,
-];
-
 export const services = [
   pipelines.PipelinesService,
 ];
+
+export function effects() {
+  return [
+    EffectsModule.run(pipelines.Effects),
+  ];
+}

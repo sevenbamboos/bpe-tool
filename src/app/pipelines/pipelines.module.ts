@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
+import { SharedModule } from '../shared/shared.module';
 import { PipelinesEditComponent, PipelinesSearchComponent } from './index';
 
 @NgModule({
   imports: [
-    CommonModule
+    SharedModule,
   ],
   declarations: [PipelinesEditComponent, PipelinesSearchComponent]
 })
